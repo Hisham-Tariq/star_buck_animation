@@ -23,9 +23,9 @@ class HomeService {
   // storing the scroll offset of the page view
   final scrollOffsetNotifier = ValueNotifier<double>(0.0);
 
+  final selectedCaetegoryNotifier = ValueNotifier<int>(0);
+
   List<StarBuckProduct> get products => starBucksProducts;
-
-
 
   HomeService() {
     pageController.addListener(listenToPageController);

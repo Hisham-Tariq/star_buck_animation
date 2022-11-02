@@ -20,7 +20,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Flutter Demo',
+      title: 'Starbuck Animation',
       debugShowCheckedModeBanner: false,
       theme: ThemeData(),
       home: const HomePage(),
@@ -45,8 +45,7 @@ class _HomePageState extends State<HomePage> {
       body: Stack(
         children: [
           TopHeader(),
-          BackgroundCurveShape(
-          ),
+          BackgroundCurveShape(),
           ProductsCarousel(),
           CurveMenuOption(
             imagePath: Assets.image1.path,
@@ -103,14 +102,51 @@ class CurveMenuOption extends StatelessWidget {
         duration: const Duration(milliseconds: 500),
         child: service.isShowingProductDetail.value
             ? const SizedBox.shrink()
-            : CircleAvatar(
-                radius: 30,
-                backgroundColor: lightGreenColor,
-                child: Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Image.asset(imagePath),
-                ),
-              ),
+            : ValueListenableBuilder(
+                valueListenable: service.selectedCaetegoryNotifier,
+                builder: (context, value, widget) {
+                  return TweenAnimationBuilder(
+                    tween: Tween<double>(begin: 1, end: value == index ? 1.2 : 1),
+                    builder: (context, value, child) {
+                      return Transform.scale(
+                        scale: value,
+                        child: child,
+                      );
+                    },
+                    duration: const Duration(milliseconds: 200),
+                    child: GestureDetector(
+                      onTap: () {
+                        service.selectedCaetegoryNotifier.value = index;
+                      },
+                      child: Container(
+                        height: 60,
+                        width: 60,
+                        decoration: BoxDecoration(
+                          color: lightGreenColor,
+                          shape: BoxShape.circle,
+                          boxShadow: [
+                            if (value == index)
+                              const BoxShadow(
+                                color: Colors.black12,
+                                blurRadius: 10,
+                                offset: Offset(0, 5),
+                              ),
+                          ],
+                          border: const Border.fromBorderSide(
+                            BorderSide(
+                              color: Colors.white,
+                              width: 2,
+                            ),
+                          ),
+                        ),
+                        child: Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Image.asset(imagePath),
+                        ),
+                      ),
+                    ),
+                  );
+                }),
       ),
     );
   }
